@@ -1,2 +1,2 @@
 # Snake Game
-This is the classic snake game written in **Python**
+This is the classic **Snake game**
