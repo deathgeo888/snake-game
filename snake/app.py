@@ -1,5 +1,6 @@
-from window import window
+import pygame as pg
+
+from display import window
 
 def run():
-    window.createWindow()
-    print("Working!")
+    screen, background = window.createWindow()
