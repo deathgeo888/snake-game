@@ -1,8 +1,6 @@
 import pygame as pg
 from constants import *
 
-pg.display.init()
-
 
 def createWindow(width=800, height=600):
     """Initialize the main window and fill it with black"""
@@ -14,4 +12,4 @@ def createWindow(width=800, height=600):
     background.convert()
     background.fill(BLACK)
 
-    return screen, background
+    return screen
