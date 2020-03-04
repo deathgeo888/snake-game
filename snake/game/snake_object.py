@@ -15,8 +15,11 @@ class Snake(pg.sprite.Sprite):
         self.screen_size = self.screen.get_size()
         self.size = math.floor(self.screen_size[0] / 32) # Size of a single part
 
-        self.speed = [0, self.size]
-        self.speed_tail = [0, self.size]
+        self.snake_size = 3 # Size of the whole snake (number of parts)
+
+        self.speed = (0, self.size)
+        self.speed_tail = (0, self.size)
+        self.tails_speeds = [[self.snake_size - 2, self.speed_tail]]
 
         self.background = pg.Surface((self.size, self.size))
         self.background.fill(BLACK)
@@ -35,13 +38,17 @@ class Snake(pg.sprite.Sprite):
             self.move_rect(self.head_rect, self.speed)
             self.screen.blit(self.head, self.head_rect)
 
-    def update(self):
-        prev_tail = self.tail_rect.copy()
-        print(prev_tail)
-        self.screen.blit(self.background, prev_tail)
+    def update(self, ate):
+        if not ate:
+            prev_tail = self.tail_rect.copy()
+            self.screen.blit(self.background, prev_tail)
 
-        hit_tail = self.hit_boundaries(self.tail_rect, self.speed_tail)
-        self.move_rect(self.tail_rect, self.speed_tail, hit_tail)
+            hit_tail = self.hit_boundaries(self.tail_rect, self.speed_tail)
+            self.move_rect(self.tail_rect, self.speed_tail, hit_tail)
+
+        else:
+            prev_tail = None
+            self.snake_size += 1
 
         hit_head = self.hit_boundaries(self.head_rect, self.speed)
         self.move_rect(self.head_rect, self.speed, hit_head)
@@ -55,7 +62,6 @@ class Snake(pg.sprite.Sprite):
             rect.y += vector[1]
 
         else:
-            print(vector[0])
             if vector[0] > 0: # Going right
                 rect.x = 0
 
@@ -76,3 +82,20 @@ class Snake(pg.sprite.Sprite):
             return True
 
         return False
+
+    def change_dir(self, key):
+        speed = self.size
+
+        if self.speed[1] == 0:
+            if key == pg.K_UP:
+                self.speed = [0, -speed]
+
+            elif key == pg.K_DOWN:
+                self.speed = [0, speed]
+
+        if self.speed[0] == 0:
+            if key == pg.K_RIGHT:
+                self.speed = [speed, 0]
+
+            elif key == pg.K_LEFT:
+                self.speed = [-speed, 0]
