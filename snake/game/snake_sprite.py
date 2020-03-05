@@ -41,6 +41,13 @@ class Snake(pg.sprite.Sprite):
             self.screen.blit(self.snake_tile, self.head_rect)
 
     def update(self, ate):
+        self.move_rect(self.head_rect, self.speed)
+        if self.check_hit():
+            print("You lost!")
+            sys.exit()
+
+        self.screen.blit(self.snake_tile, self.head_rect)
+
         if not ate:
             prev_tail = self.tail_rect.copy()
             self.screen.blit(self.background, prev_tail)
@@ -56,14 +63,7 @@ class Snake(pg.sprite.Sprite):
             prev_tail = None
             self.snake_size += 1
 
-        self.move_rect(self.head_rect, self.speed)
-        if self.check_hit():
-            print("You lost!")
-            sys.exit()
-
-        self.screen.blit(self.snake_tile, self.head_rect)
-
-        return [prev_tail, self.tail_rect, self.head_rect]
+        return [prev_tail, self.head_rect]
 
     def move_rect(self, rect, vector):
         hit = self.hit_boundaries(rect, vector)

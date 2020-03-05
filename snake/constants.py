@@ -1,3 +1,5 @@
 BLACK = (0, 0, 0)
 SNAKE_COLOR = (255, 255, 255)
 APPLE_COLOR = (255, 0, 0)
+
+#TILE_SIZE = 25
