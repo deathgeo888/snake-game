@@ -17,31 +17,37 @@ class Snake(pg.sprite.Sprite):
 
         self.snake_size = 3 # Size of the whole snake (number of parts)
 
-        self.speed = (0, self.size)
-        self.speed_tail = (0, self.size)
-        self.tails_speeds = [[self.snake_size - 2, self.speed_tail]]
+        self.speed = (0, self.size) # The direction of the snake
+        self.speed_tail = self.speed # The direction of the tail
+
+        self.edges = [] # Each time the snake steers we will append the rect where the change happened and save the way of the direction the tail must have
 
         self.background = pg.Surface((self.size, self.size))
         self.background.fill(BLACK)
 
-        self.head = pg.Surface((self.size, self.size))
-        self.head.fill(SNAKE_COLOR)
-        self.head_rect = self.head.get_rect()
+        self.snake_tile = pg.Surface((self.size, self.size))
+        self.snake_tile.fill(SNAKE_COLOR)
+        self.head_rect = self.snake_tile.get_rect()
 
         posx, posy = (self.screen_size[0] / 2) - (self.screen_size[0] % self.size), (self.screen_size[1] / 4) - (self.screen_size[1] % self.size)
         self.head_rect.x = posx
         self.head_rect.y = posy
         self.tail_rect = self.head_rect.copy()
 
-        self.screen.blit(self.head, self.head_rect)
+        self.screen.blit(self.snake_tile, self.head_rect)
         for i in range(2):
             self.move_rect(self.head_rect, self.speed)
-            self.screen.blit(self.head, self.head_rect)
+            self.screen.blit(self.snake_tile, self.head_rect)
 
     def update(self, ate):
         if not ate:
             prev_tail = self.tail_rect.copy()
             self.screen.blit(self.background, prev_tail)
+
+            if self.edges:
+                if prev_tail == self.edges[0][0]:
+                    self.speed_tail = self.edges[0][1]
+                    self.edges.pop(0)
 
             hit_tail = self.hit_boundaries(self.tail_rect, self.speed_tail)
             self.move_rect(self.tail_rect, self.speed_tail, hit_tail)
@@ -52,7 +58,7 @@ class Snake(pg.sprite.Sprite):
 
         hit_head = self.hit_boundaries(self.head_rect, self.speed)
         self.move_rect(self.head_rect, self.speed, hit_head)
-        self.screen.blit(self.head, self.head_rect)
+        self.screen.blit(self.snake_tile, self.head_rect)
 
         return [prev_tail, self.tail_rect, self.head_rect]
 
@@ -99,3 +105,5 @@ class Snake(pg.sprite.Sprite):
 
             elif key == pg.K_LEFT:
                 self.speed = [-speed, 0]
+
+        self.edges.append((self.head_rect.copy(), self.speed))
