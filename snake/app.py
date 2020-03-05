@@ -19,7 +19,6 @@ def run():
     pg.display.flip()
 
     while True:
-        ate = False
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 sys.exit()
@@ -28,14 +27,15 @@ def run():
                 if event.key == pg.K_ESCAPE:
                     sys.exit()
 
-                elif event.key == pg.K_h:
-                    ate = True
-
                 elif event.key >= pg.K_UP and event.key <= pg.K_LEFT:
                     snake.change_dir(event.key)
 
                 break
 
-        snake_updates = snake.update(ate)
+        snake_updates = snake.update()
+        ate = snake_updates.pop(0)
+        if ate:
+            apple.place_apple()
+
         pg.display.update(snake_updates)
         pg.time.delay(500)

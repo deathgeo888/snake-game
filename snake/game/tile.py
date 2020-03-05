@@ -11,5 +11,17 @@ class Tile(pg.sprite.Sprite):
         self.screen = pg.display.get_surface()
         self.screen_size = self.screen.get_size()
 
-        self.background = pg.Surface((TILE_SIZE, TILE_SIZE))
+        self.size = TILE_SIZE
+
+        self.background = pg.Surface((self.size, self.size))
         self.background.fill(BLACK)
+
+
+    def check_color(self, rect, tile_color):
+        pixel = rect.center
+        color = self.screen.get_at(pixel)
+
+        if color == tile_color:
+            return True
+
+        return False

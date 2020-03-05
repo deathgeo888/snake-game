@@ -13,8 +13,6 @@ class Snake(tile.Tile):
     def __init__(self):
         tile.Tile.__init__(self)
 
-        self.size = TILE_SIZE # Size of a single part /32
-
         self.snake_size = 3 # Size of the whole snake (number of parts)
 
         self.speed = (0, self.size) # The direction of the snake
@@ -36,13 +34,16 @@ class Snake(tile.Tile):
         for i in range(2):
             self.move_rect(self.head_rect, self.speed)
             self.screen.blit(self.snake_tile, self.head_rect)
-            
 
-    def update(self, ate):
+
+    def update(self):
         self.move_rect(self.head_rect, self.speed)
-        if self.check_hit():
+
+        if self.check_color(self.head_rect, SNAKE_COLOR):
             print("You lost!")
             sys.exit()
+
+        ate = self.check_color(self.head_rect, APPLE_COLOR)
 
         self.screen.blit(self.snake_tile, self.head_rect)
 
@@ -61,7 +62,7 @@ class Snake(tile.Tile):
             prev_tail = None
             self.snake_size += 1
 
-        return [prev_tail, self.head_rect]
+        return [ate, prev_tail, self.head_rect]
 
     def move_rect(self, rect, vector):
         hit = self.hit_boundaries(rect, vector)
@@ -75,19 +76,19 @@ class Snake(tile.Tile):
                 rect.x = 0
 
             elif vector[0] < 0: # Going left
-                rect.x = self.screen_size[0]
+                rect.x = self.screen_size[0] - self.size
 
             elif vector[1] > 0: # Going up
                 rect.y = 0
 
             else: # Going down
-                rect.y = self.screen_size[1]
+                rect.y = self.screen_size[1] - self.size
 
     def hit_boundaries(self, rect, vector):
-        if (rect.x >= (self.screen_size[0] - self.size) and vector[0] > 0) or (rect.x <= self.size and vector[0] < 0):
+        if (rect.x >= (self.screen_size[0] - self.size) and vector[0] > 0) or (rect.x < self.size and vector[0] < 0):
             return True
 
-        if (rect.y >= (self.screen_size[1] - self.size) and vector[1] > 0) or (rect.y <= self.size and vector[1] < 0):
+        if (rect.y >= (self.screen_size[1] - self.size) and vector[1] > 0) or (rect.y < self.size and vector[1] < 0):
             return True
 
         return False
@@ -110,12 +111,3 @@ class Snake(tile.Tile):
                 self.speed = [-speed, 0]
 
         self.edges.append((self.head_rect.copy(), self.speed))
-
-    def check_hit(self):
-        pixel = self.head_rect.center
-        color = self.screen.get_at(pixel)
-
-        if color == SNAKE_COLOR:
-            return True
-
-        return False
