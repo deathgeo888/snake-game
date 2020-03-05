@@ -14,8 +14,7 @@ def run():
     screen= window.createWindow()
 
     snake = snake_sprite.Snake()
-    #apple = apple_sprite.Apple()
-    #print(apple.background)
+    apple = apple_sprite.Apple()
 
     pg.display.flip()
 

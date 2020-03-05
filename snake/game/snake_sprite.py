@@ -4,17 +4,16 @@ import sys
 import pygame as pg
 from pygame.locals import *
 
+from . import tile
 from constants import *
 
 
-class Snake(pg.sprite.Sprite):
+class Snake(tile.Tile):
 
     def __init__(self):
-        pg.sprite.Sprite.__init__(self)
+        tile.Tile.__init__(self)
 
-        self.screen = pg.display.get_surface()
-        self.screen_size = self.screen.get_size()
-        self.size = math.floor(self.screen_size[0] / 32) # Size of a single part
+        self.size = TILE_SIZE # Size of a single part /32
 
         self.snake_size = 3 # Size of the whole snake (number of parts)
 
@@ -22,9 +21,6 @@ class Snake(pg.sprite.Sprite):
         self.speed_tail = self.speed # The direction of the tail
 
         self.edges = [] # Each time the snake steers we will append the rect where the change happened and save the way of the direction the tail must have
-
-        self.background = pg.Surface((self.size, self.size))
-        self.background.fill(BLACK)
 
         self.snake_tile = pg.Surface((self.size, self.size))
         self.snake_tile.fill(SNAKE_COLOR)
@@ -36,9 +32,11 @@ class Snake(pg.sprite.Sprite):
         self.tail_rect = self.head_rect.copy()
 
         self.screen.blit(self.snake_tile, self.head_rect)
+
         for i in range(2):
             self.move_rect(self.head_rect, self.speed)
             self.screen.blit(self.snake_tile, self.head_rect)
+            
 
     def update(self, ate):
         self.move_rect(self.head_rect, self.speed)
