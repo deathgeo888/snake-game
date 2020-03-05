@@ -12,6 +12,7 @@ pg.init()
 
 def run():
     screen= window.createWindow()
+    clock = pg.time.Clock()
 
     snake = snake_sprite.Snake()
     apple = apple_sprite.Apple()
@@ -19,6 +20,8 @@ def run():
     pg.display.flip()
 
     while True:
+        clock.tick(15)
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 sys.exit()
@@ -34,8 +37,9 @@ def run():
 
         snake_updates = snake.update()
         ate = snake_updates.pop(0)
-        if ate:
-            apple.place_apple()
 
-        pg.display.update(snake_updates)
-        pg.time.delay(500)
+        apple_rect = []
+        if ate:
+            apple_rect = apple.place_apple()
+
+        pg.display.update(snake_updates + apple_rect)

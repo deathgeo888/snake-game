@@ -34,4 +34,4 @@ class Apple(tile.Tile):
 
             if self.check_color(self.apple_rect, BLACK):
                 self.screen.blit(self.apple_tile, self.apple_rect)
-                break
+                return [self.apple_rect]

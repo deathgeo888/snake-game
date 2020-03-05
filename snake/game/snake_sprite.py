@@ -13,7 +13,7 @@ class Snake(tile.Tile):
     def __init__(self):
         tile.Tile.__init__(self)
 
-        self.snake_size = 3 # Size of the whole snake (number of parts)
+        self.score = 0 # How many apples it has eaten
 
         self.speed = (0, self.size) # The direction of the snake
         self.speed_tail = self.speed # The direction of the tail
@@ -40,7 +40,7 @@ class Snake(tile.Tile):
         self.move_rect(self.head_rect, self.speed)
 
         if self.check_color(self.head_rect, SNAKE_COLOR):
-            print("You lost!")
+            print("You lost! Your score was %d!" % self.score)
             sys.exit()
 
         ate = self.check_color(self.head_rect, APPLE_COLOR)
@@ -60,7 +60,7 @@ class Snake(tile.Tile):
 
         else:
             prev_tail = None
-            self.snake_size += 1
+            self.score += 1
 
         return [ate, prev_tail, self.head_rect]
 
