@@ -1,4 +1,5 @@
 import math
+import sys
 
 import pygame as pg
 from pygame.locals import *
@@ -49,20 +50,24 @@ class Snake(pg.sprite.Sprite):
                     self.speed_tail = self.edges[0][1]
                     self.edges.pop(0)
 
-            hit_tail = self.hit_boundaries(self.tail_rect, self.speed_tail)
-            self.move_rect(self.tail_rect, self.speed_tail, hit_tail)
+            self.move_rect(self.tail_rect, self.speed_tail)
 
         else:
             prev_tail = None
             self.snake_size += 1
 
-        hit_head = self.hit_boundaries(self.head_rect, self.speed)
-        self.move_rect(self.head_rect, self.speed, hit_head)
+        self.move_rect(self.head_rect, self.speed)
+        if self.check_hit():
+            print("You lost!")
+            sys.exit()
+
         self.screen.blit(self.snake_tile, self.head_rect)
 
         return [prev_tail, self.tail_rect, self.head_rect]
 
-    def move_rect(self, rect, vector, hit=False):
+    def move_rect(self, rect, vector):
+        hit = self.hit_boundaries(rect, vector)
+
         if hit == False:
             rect.x += vector[0]
             rect.y += vector[1]
@@ -107,3 +112,12 @@ class Snake(pg.sprite.Sprite):
                 self.speed = [-speed, 0]
 
         self.edges.append((self.head_rect.copy(), self.speed))
+
+    def check_hit(self):
+        pixel = self.head_rect.center
+        color = self.screen.get_at(pixel)
+
+        if color == SNAKE_COLOR:
+            return True
+
+        return False
